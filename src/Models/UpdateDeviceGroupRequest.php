@@ -24,6 +24,11 @@ class UpdateDeviceGroupRequest extends Model
     public $dynamicOperator;
 
     /**
+     * @var Rule
+     */
+    public $dynamicRule;
+
+    /**
      * @var string
      */
     public $name;
@@ -31,11 +36,15 @@ class UpdateDeviceGroupRequest extends Model
         'description' => 'Description',
         'deviceGroupId' => 'DeviceGroupId',
         'dynamicOperator' => 'DynamicOperator',
+        'dynamicRule' => 'DynamicRule',
         'name' => 'Name',
     ];
 
     public function validate()
     {
+        if (null !== $this->dynamicRule) {
+            $this->dynamicRule->validate();
+        }
         parent::validate();
     }
 
@@ -52,6 +61,10 @@ class UpdateDeviceGroupRequest extends Model
 
         if (null !== $this->dynamicOperator) {
             $res['DynamicOperator'] = $this->dynamicOperator;
+        }
+
+        if (null !== $this->dynamicRule) {
+            $res['DynamicRule'] = null !== $this->dynamicRule ? $this->dynamicRule->toArray($noStream) : $this->dynamicRule;
         }
 
         if (null !== $this->name) {
@@ -79,6 +92,10 @@ class UpdateDeviceGroupRequest extends Model
 
         if (isset($map['DynamicOperator'])) {
             $model->dynamicOperator = $map['DynamicOperator'];
+        }
+
+        if (isset($map['DynamicRule'])) {
+            $model->dynamicRule = Rule::fromMap($map['DynamicRule']);
         }
 
         if (isset($map['Name'])) {
